@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "fletcher",
+	"version": "${version}",
+	"name": "Fletcher",
+	"description": "Adding functionality to the Fletching Table",
+	"authors": [
+		"Mr. Pineapple"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/fletcher/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.mrpineapple.fletcher.Fletcher"
+		],
+		"fabric-datagen": [
+			"com.mrpineapple.fletcher.FletcherDataGenerator"
+		]
+	},
+	"mixins": [
+		"fletcher.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.1.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
