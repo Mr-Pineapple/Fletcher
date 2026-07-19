@@ -9,12 +9,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.Blocks;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Fletcher implements ModInitializer {
 	public static final String MOD_ID = "fletcher";
-	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	@Override
 	public void onInitialize() {
