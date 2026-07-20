@@ -20,6 +20,9 @@
 		],
 		"fabric-datagen": [
 			"com.mrpineapple.fletcher.FletcherDataGenerator"
+		],
+		"client": [
+			"com.mrpineapple.fletcher.FletcherClient"
 		]
 	},
 	"mixins": [

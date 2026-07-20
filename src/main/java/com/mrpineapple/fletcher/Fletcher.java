@@ -1,5 +1,6 @@
 package com.mrpineapple.fletcher;
 
+import com.mrpineapple.fletcher.core.ModRegistry;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -31,6 +32,8 @@ public class Fletcher implements ModInitializer {
 			}
 			return InteractionResult.PASS;
 		});
+		System.out.println("RegisteredMain");
+		ModRegistry.register();
 	}
 
 	public static Identifier id(String path) {
