@@ -1,9 +1,15 @@
-# Fletcher
+![Icon](https://images2.imgbox.com/f8/53/YwHfPHgA_o.png)
+## 📖 About:
+Fletcher is a simple mod that adds functionality to the Fletching Table added in 1.14.
+Because there isn't much that can be done with archery in the game, the new use of this block is to craft tipped and spectral arrows.
 
-## Setup
+## ℹ️ Issues
+Issues can be reported directly on the GitHub repository.
 
-For setup instructions, please see the [Fabric Documentation page](https://docs.fabricmc.net/develop/getting-started/creating-a-project#setting-up) related to the IDE that you are using.
+## 👦 Community
+If you would like to join the community, follow this, and my other projects, join the [discord here.](https://discord.gg/mNWSEB5)
 
-## License
+## 📥 Updates and Versions:
+This mod will be updated to newer versions of the game as soon as I get the chance.
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+## 📷 Screenshots:
