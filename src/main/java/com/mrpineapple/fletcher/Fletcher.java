@@ -1,39 +1,19 @@
 package com.mrpineapple.fletcher;
 
+import com.mrpineapple.fletcher.core.InteractionEvent;
 import com.mrpineapple.fletcher.core.ModRegistry;
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
-
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.level.block.Blocks;
 
 public class Fletcher implements ModInitializer {
 	public static final String MOD_ID = "fletcher";
 
 	@Override
 	public void onInitialize() {
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-			BlockPos blockPosition = hitResult.getBlockPos();
-			if(!world.getBlockState(blockPosition).is(Blocks.FLETCHING_TABLE)) {
-				return InteractionResult.PASS;
-			}
-
-			if(world.isClientSide()) {
-				return InteractionResult.SUCCESS;
-			}
-
-			if(player instanceof ServerPlayer serverPlayer) {
-				System.out.println("FLETCHER");
-				return InteractionResult.CONSUME;
-			}
-			return InteractionResult.PASS;
-		});
 		System.out.println("RegisteredMain");
 		ModRegistry.register();
+		InteractionEvent.blockInteraction();
 	}
 
 	public static Identifier id(String path) {
