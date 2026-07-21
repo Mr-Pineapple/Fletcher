@@ -14,6 +14,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
@@ -78,8 +79,19 @@ public class FletchingTableMenu extends AbstractContainerMenu {
         stack.onCraftedBy(player, stack.getCount());
         this.output.awardUsedRecipes(player, List.of(this.input.getItem(0), this.input.getItem(1)));
 
+        ItemStack modifier = this.input.getItem(1).copy();
+
         this.input.removeItem(0, stack.getCount());
         this.input.removeItem(1, stack.getCount());
+
+        if(modifier.is(Items.POTION)) {
+            ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
+            if(this.input.getItem(1).isEmpty()) {
+                this.input.setItem(1, bottle);
+            } else {
+                player.getInventory().placeItemBackInInventory(bottle);
+            }
+        }
     }
 
     @Override
