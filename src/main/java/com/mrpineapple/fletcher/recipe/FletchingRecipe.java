@@ -61,16 +61,20 @@ public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
     public ItemStack assemble(FletchingRecipeInput input) {
         ItemStack result = this.result.create();
         ItemStack potion = input.modifierItem();
+        ItemStack arrows = input.baseItem();
+
+        if(arrows.is(Items.ARROW)) {
+            result.setCount(Math.min(arrows.getCount(), 8));
+        }
 
         if(potion.is(Items.POTION) && result.is(Items.TIPPED_ARROW)) {
             PotionContents contents = potion.get(DataComponents.POTION_CONTENTS);
             if(contents != null) {
                 result.set(DataComponents.POTION_CONTENTS, contents);
             }
-            return result;
         }
 
-        return this.result.create();
+        return result;
     }
 
     @Override
