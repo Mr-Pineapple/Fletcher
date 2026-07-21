@@ -77,6 +77,9 @@ public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
                     result.set(DataComponents.POTION_CONTENTS, contents);
                 }
             }
+            if(modifier.is(Items.GLOWSTONE_DUST)) {
+                result.setCount(Math.min(base.getCount(), modifier.getCount() * 8));
+            }
         }
 
         return result;
