@@ -54,10 +54,9 @@ public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
 
     @Override
     public boolean matches(FletchingRecipeInput input, Level level) {
-        if(input.baseItem().is(Items.BOW) || input.baseItem().is(Items.CROSSBOW)) {
+        if((input.baseItem().is(Items.BOW) || input.baseItem().is(Items.CROSSBOW)) && input.modifierItem().is(Items.STRING)) {
             return input.baseItem().getDamageValue() > 0;
         }
-
         return this.baseItem.test(input.baseItem()) && this.modifierItem.test(input.modifierItem());
     }
 
