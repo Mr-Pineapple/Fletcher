@@ -1,4 +1,5 @@
-![Icon](https://i.ibb.co/1fV965MQ/icon.png)
+<img src="https://i.ibb.co/1fV965MQ/icon.png" alt="icon" width="150">
+
 ## 📖 About:
 Fletcher is a simple mod that adds functionality to the Fletching Table added in 1.14.
 Because there isn't much that can be done with archery in the game, the new use of this block is to craft tipped and spectral arrows as well as bow/crossbow repair.
