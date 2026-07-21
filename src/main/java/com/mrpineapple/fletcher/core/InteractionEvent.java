@@ -20,6 +20,10 @@ public class InteractionEvent {
                 return InteractionResult.PASS;
             }
 
+            if(player.isShiftKeyDown() && !player.getItemInHand(hand).isEmpty()) {
+                return InteractionResult.PASS;
+            }
+
             if(world.isClientSide()) {
                 return InteractionResult.SUCCESS;
             }
