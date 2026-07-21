@@ -1,0 +1,8 @@
+{
+  "type": "fletcher:fletching",
+  "baseItem": "minecraft:bow",
+  "modifierItem": "minecraft:string",
+  "result": {
+    "id": "minecraft:bow"
+  }
+}

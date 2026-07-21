@@ -1,0 +1,8 @@
+{
+  "type": "fletcher:fletching",
+  "baseItem": "minecraft:crossbow",
+  "modifierItem": "minecraft:string",
+  "result": {
+    "id": "minecraft:crossbow"
+  }
+}

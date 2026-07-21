@@ -60,20 +60,34 @@ public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
     @Override
     public ItemStack assemble(FletchingRecipeInput input) {
         ItemStack result = this.result.create();
-        ItemStack potion = input.modifierItem();
-        ItemStack arrows = input.baseItem();
+        ItemStack modifier = input.modifierItem();
+        ItemStack base = input.baseItem();
 
-        if(arrows.is(Items.ARROW)) {
-            result.setCount(Math.min(arrows.getCount(), 8));
+        if((base.is(Items.BOW) || base.is(Items.CROSSBOW)) && modifier.is(Items.STRING)) {
+            return repairBowWithString(base, modifier.getCount());
         }
 
-        if(potion.is(Items.POTION) && result.is(Items.TIPPED_ARROW)) {
-            PotionContents contents = potion.get(DataComponents.POTION_CONTENTS);
-            if(contents != null) {
-                result.set(DataComponents.POTION_CONTENTS, contents);
+        if(base.is(Items.ARROW)) {
+            result.setCount(Math.min(base.getCount(), 8));
+
+            //Potion -> Tipped Arrow
+            if(modifier.is(Items.POTION)) {
+                PotionContents contents = modifier.get(DataComponents.POTION_CONTENTS);
+                if(contents != null) {
+                    result.set(DataComponents.POTION_CONTENTS, contents);
+                }
             }
         }
 
+        return result;
+    }
+
+    private ItemStack repairBowWithString(ItemStack bow, int stringAmount) {
+        ItemStack result = bow.copy();
+        int maxDamage = result.getMaxDamage();
+        int repairAmount = (maxDamage / 8) * stringAmount;
+        int newDamage = Math.max(0, result.getDamageValue() - repairAmount);
+        result.setDamageValue(newDamage);
         return result;
     }
 

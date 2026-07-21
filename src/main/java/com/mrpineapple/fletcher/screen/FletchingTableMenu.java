@@ -79,18 +79,22 @@ public class FletchingTableMenu extends AbstractContainerMenu {
         stack.onCraftedBy(player, stack.getCount());
         this.output.awardUsedRecipes(player, List.of(this.input.getItem(0), this.input.getItem(1)));
 
+        ItemStack base = this.input.getItem(0).copy();
         ItemStack modifier = this.input.getItem(1).copy();
 
-        this.input.removeItem(0, stack.getCount());
-        this.input.removeItem(1, stack.getCount());
-
-        if(modifier.is(Items.POTION)) {
-            ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
-            if(this.input.getItem(1).isEmpty()) {
-                this.input.setItem(1, bottle);
-            } else {
-                player.getInventory().placeItemBackInInventory(bottle);
-            }
+        if(base.is(Items.ARROW)) {
+            //Arrow recipes consume amount of arrows
+            this.input.removeItem(0, stack.getCount());
+            this.input.removeItem(1, 1);
+        }
+        else if((base.is(Items.BOW) || base.is(Items.CROSSBOW)) && modifier.is(Items.STRING)) {
+            //Bow repair consumes all string used
+            this.input.removeItem(0, 1);
+            this.input.removeItem(1, modifier.getCount());
+        } else {
+            //Default recipe
+            this.input.removeItem(0, 1);
+            this.input.removeItem(1, 1);
         }
     }
 
