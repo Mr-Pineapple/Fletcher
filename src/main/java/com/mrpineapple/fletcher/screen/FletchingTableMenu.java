@@ -16,17 +16,27 @@ public class FletchingTableMenu extends AbstractContainerMenu {
     private static final int SLOT_OUT = 2;
     private final BlockPos blockPos;
     private final Player interactionPlayer;
+    private final SimpleContainer inventory;
+    private boolean preventCraft;
 
-    public FletchingTableMenu(int syncId, Inventory inventory, BlockPos pos) {
+    public FletchingTableMenu(int syncId, Inventory inv, BlockPos pos) {
         super(ModRegistry.FLETCHING_MENU, syncId);
         this.blockPos = pos;
-        this.interactionPlayer = inventory.player;
+        this.interactionPlayer = inv.player;
 
-        SimpleContainer inventory1 = new SimpleContainer(3) {};
+        this.inventory = new SimpleContainer(3) {
+            @Override
+            public void setChanged() {
+                super.setChanged();
+                if(!preventCraft && !interactionPlayer.level().isClientSide()) {
+                    System.out.println("craft");
+                }
+            }
+        };
 
-        this.addSlot(new Slot(inventory1, SLOT_ARROW, 27, 35) {});
-        this.addSlot(new Slot(inventory1, SLOT_MODIFIER, 76, 35) {});
-        this.addSlot(new Slot(inventory1, SLOT_OUT, 134, 35) {
+        this.addSlot(new Slot(inventory, SLOT_ARROW, 27, 35) {});
+        this.addSlot(new Slot(inventory, SLOT_MODIFIER, 76, 35) {});
+        this.addSlot(new Slot(inventory, SLOT_OUT, 134, 35) {
             @Override
             public boolean mayPlace(@NonNull ItemStack itemStack) {
                 return false;
@@ -54,5 +64,6 @@ public class FletchingTableMenu extends AbstractContainerMenu {
         if(interactionPlayer.level().isClientSide()) return true;
         return interactionPlayer.blockPosition().closerThan(this.blockPos, 8.0);
     }
+
 
 }
