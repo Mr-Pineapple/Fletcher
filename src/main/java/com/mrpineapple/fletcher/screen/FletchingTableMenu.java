@@ -1,68 +1,101 @@
 package com.mrpineapple.fletcher.screen;
 
 import com.mrpineapple.fletcher.core.ModRegistry;
+import com.mrpineapple.fletcher.recipe.FletchingRecipe;
+import com.mrpineapple.fletcher.recipe.FletchingRecipeInput;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.Level;
 import org.jspecify.annotations.NonNull;
 
+import java.util.List;
+import java.util.Optional;
+
 public class FletchingTableMenu extends AbstractContainerMenu {
-    private static final int SLOT_ARROW = 0;
-    private static final int SLOT_MODIFIER = 1;
-    private static final int SLOT_OUT = 2;
-    private final BlockPos blockPos;
-    private final Player interactionPlayer;
-    private final SimpleContainer inventory;
-    private boolean preventCraft;
+    private final Container input = new SimpleContainer(2) {
+        @Override
+        public void setChanged() {
+            super.setChanged();
+            FletchingTableMenu.this.slotsChanged(this);
+        }
+    };
 
-    public FletchingTableMenu(int syncId, Inventory inv, BlockPos pos) {
-        super(ModRegistry.FLETCHING_MENU, syncId);
-        this.blockPos = pos;
-        this.interactionPlayer = inv.player;
+    private final ResultContainer output = new ResultContainer();
+    private final Level level;
 
-        this.inventory = new SimpleContainer(3) {
+    public FletchingTableMenu(int i, Inventory inventory) {
+        super(ModRegistry.FLETCHING_MENU, i);
+
+        this.level = inventory.player.level();
+
+        addSlot(new Slot(this.input, 0, 27, 35));
+        addSlot(new Slot(this.input, 1, 76, 35));
+
+        addSlot(new Slot(this.output, 0, 134, 35) {
             @Override
-            public void setChanged() {
-                super.setChanged();
-                if(!preventCraft && !interactionPlayer.level().isClientSide()) {
-                    System.out.println("craft");
-                }
-            }
-        };
-
-        this.addSlot(new Slot(inventory, SLOT_ARROW, 27, 35) {});
-        this.addSlot(new Slot(inventory, SLOT_MODIFIER, 76, 35) {});
-        this.addSlot(new Slot(inventory, SLOT_OUT, 134, 35) {
-            @Override
-            public boolean mayPlace(@NonNull ItemStack itemStack) {
-                return false;
+            public void onTake(Player player, ItemStack carried) {
+                FletchingTableMenu.this.onTake(player, carried);
             }
         });
 
-        for(int y = 0; y < 3; ++y) {
-            for(int x = 0; x < 9; ++x) {
-                this.addSlot(new Slot(inventory, x + y * 9 + 9, 8 + x * 18, 84 + y * 18));
+        addStandardInventorySlots(inventory, 8, 84);
+    }
+
+    @Override
+    public void slotsChanged(Container container) {
+        super.slotsChanged(container);
+
+        if(container == this.input) {
+            if(this.level instanceof ServerLevel serverLevel) {
+                FletchingRecipeInput recipeInput = new FletchingRecipeInput(this.input.getItem(0), this.input.getItem(1));
+                Optional<RecipeHolder<FletchingRecipe>> recipe = serverLevel.recipeAccess().getRecipeFor(
+                        ModRegistry.FLETCHING_RECIPE_TYPE,
+                        recipeInput,
+                        serverLevel);
+
+                if(recipe.isPresent()) {
+                    this.output.setItem(0, recipe.get().value().assemble(recipeInput));
+                    this.output.setRecipeUsed(recipe.get());
+                } else {
+                    this.output.clearContent();
+                    this.output.setRecipeUsed(null);
+                }
             }
         }
+    }
 
-        for(int x = 0; x < 9; x++) {
-            this.addSlot(new Slot(inventory, x, 8 + x * 18, 142));
-        }
+    public void onTake(Player player, ItemStack stack) {
+        stack.onCraftedBy(player, stack.getCount());
+        this.output.awardUsedRecipes(player, List.of(this.input.getItem(0), this.input.getItem(1)));
+
+        this.input.removeItem(0, stack.getCount());
+        this.input.removeItem(1, stack.getCount());
     }
 
     @Override
     public ItemStack quickMoveStack(Player player, int slotIndex) {
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override
     public boolean stillValid(Player player) {
-        if(interactionPlayer.level().isClientSide()) return true;
-        return interactionPlayer.blockPosition().closerThan(this.blockPos, 8.0);
+        return true;
+    }
+
+    @Override
+    public void removed(Player player) {
+        super.removed(player);
+        clearContainer(player, this.input);
     }
 
 

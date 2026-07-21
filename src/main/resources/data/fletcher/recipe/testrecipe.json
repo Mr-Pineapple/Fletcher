@@ -1,0 +1,8 @@
+{
+  "type": "fletcher:fletching",
+  "baseItem": "minecraft:arrow",
+  "modifierItem": "minecraft:glowstone_dust",
+  "result": {
+    "id": "minecraft:spectral_arrow"
+  }
+}
