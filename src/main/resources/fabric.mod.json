@@ -18,16 +18,10 @@
 		"main": [
 			"com.mrpineapple.fletcher.Fletcher"
 		],
-		"fabric-datagen": [
-			"com.mrpineapple.fletcher.FletcherDataGenerator"
-		],
 		"client": [
 			"com.mrpineapple.fletcher.FletcherClient"
 		]
 	},
-	"mixins": [
-		"fletcher.mixins.json"
-	],
 	"depends": {
 		"fabricloader": ">=0.19.3",
 		"minecraft": "~26.1.2",
