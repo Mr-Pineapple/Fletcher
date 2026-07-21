@@ -1,0 +1,8 @@
+{
+  "type": "fletcher:fletching",
+  "baseItem": "minecraft:arrow",
+  "modifierItem": "minecraft:potion",
+  "result": {
+    "id": "minecraft:tipped_arrow"
+  }
+}

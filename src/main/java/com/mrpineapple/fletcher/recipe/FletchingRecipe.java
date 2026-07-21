@@ -3,10 +3,13 @@ package com.mrpineapple.fletcher.recipe;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrpineapple.fletcher.core.ModRegistry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
@@ -56,6 +59,17 @@ public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
 
     @Override
     public ItemStack assemble(FletchingRecipeInput input) {
+        ItemStack result = this.result.create();
+        ItemStack potion = input.modifierItem();
+
+        if(potion.is(Items.POTION) && result.is(Items.TIPPED_ARROW)) {
+            PotionContents contents = potion.get(DataComponents.POTION_CONTENTS);
+            if(contents != null) {
+                result.set(DataComponents.POTION_CONTENTS, contents);
+            }
+            return result;
+        }
+
         return this.result.create();
     }
 
