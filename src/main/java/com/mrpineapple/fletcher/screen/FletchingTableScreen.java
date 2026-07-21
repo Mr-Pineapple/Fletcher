@@ -3,7 +3,6 @@ package com.mrpineapple.fletcher.screen;
 import com.mrpineapple.fletcher.Fletcher;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.CyclingSlotBackground;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -11,8 +10,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class FletchingTableScreen extends AbstractContainerScreen<@NotNull FletchingTableMenu> {
     private static final Identifier FLETCHING_TABLE_LOCATION = Identifier.fromNamespaceAndPath(Fletcher.MOD_ID, "textures/gui/fletching.png");
@@ -27,6 +24,8 @@ public class FletchingTableScreen extends AbstractContainerScreen<@NotNull Fletc
 
     private int recipeHint = 0;
     private int recipeHintTicks = 0;
+    private final FadingSlotIcon baseHint = new FadingSlotIcon();
+    private final FadingSlotIcon modifierHint = new FadingSlotIcon();
 
     public FletchingTableScreen(@NotNull FletchingTableMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -46,6 +45,9 @@ public class FletchingTableScreen extends AbstractContainerScreen<@NotNull Fletc
     @Override
     protected void containerTick() {
         super.containerTick();
+
+        baseHint.tick();
+        modifierHint.tick();
 
         if(++recipeHintTicks >= 30) {
             recipeHintTicks = 0;
@@ -97,11 +99,10 @@ public class FletchingTableScreen extends AbstractContainerScreen<@NotNull Fletc
             }
         }
 
-        if(baseSprite != null) {
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, baseSprite, this.leftPos + 27, this.topPos + 35, 16, 16);
-        }
-        if(modifierSprite != null) {
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, modifierSprite, this.leftPos + 76, this.topPos + 35, 16, 16);
-        }
+        baseHint.set(baseSprite);
+        modifierHint.set(modifierSprite);
+
+        baseHint.render(graphics, this.leftPos + 27, this.topPos + 35);
+        modifierHint.render(graphics, this.leftPos + 76, this.topPos + 35);
     }
 }
