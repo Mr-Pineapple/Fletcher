@@ -40,6 +40,7 @@ public class InteractionEvent {
                         return new FletchingTableMenu(containerId, inventory, blockPos);
                     }
                 });
+                player.awardStat(ModRegistry.FLETCHING_STAT, 1);
                 return InteractionResult.CONSUME;
             }
 
