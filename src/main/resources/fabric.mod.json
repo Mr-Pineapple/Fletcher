@@ -3,13 +3,14 @@
 	"id": "fletcher",
 	"version": "${version}",
 	"name": "Fletcher",
-	"description": "Adding functionality to the Fletching Table",
+	"description": "A mod that adds functionality to the Fletching Table\n\nYou can now use the fletching table to craft tipped and spectral arrows as well as repair your bows and crossbows",
 	"authors": [
 		"Mr. Pineapple"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://discord.gg/mNWSEB5",
+		"sources": "https://github.com/Mr-Pineapple/Fletcher",
+		"issues": "https://github.com/Mr-Pineapple/Fletcher/issues"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/fletcher/icon.png",
@@ -24,7 +25,7 @@
 	},
 	"depends": {
 		"fabricloader": ">=0.19.3",
-		"minecraft": "~26.1.2",
+		"minecraft": "~26.2",
 		"java": ">=25",
 		"fabric-api": "*"
 	}
