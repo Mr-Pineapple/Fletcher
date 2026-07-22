@@ -3,18 +3,21 @@ package com.mrpineapple.fletcher.screen;
 import com.mrpineapple.fletcher.core.ModRegistry;
 import com.mrpineapple.fletcher.recipe.FletchingRecipe;
 import com.mrpineapple.fletcher.recipe.FletchingRecipeInput;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,14 +33,27 @@ public class FletchingTableMenu extends AbstractContainerMenu {
 
     private final ResultContainer output = new ResultContainer();
     private final Level level;
+    private final BlockPos pos;
 
-    public FletchingTableMenu(int i, Inventory inventory) {
+    public FletchingTableMenu(int i, Inventory inventory, BlockPos position) {
         super(ModRegistry.FLETCHING_MENU, i);
 
         this.level = inventory.player.level();
+        this.pos = position;
 
-        addSlot(new Slot(this.input, 0, 27, 35));
-        addSlot(new Slot(this.input, 1, 76, 35));
+
+        addSlot(new Slot(this.input, 0, 27, 35) {
+            @Override
+            public boolean mayPlace(ItemStack itemStack) {
+                return itemStack.is(Items.ARROW) || itemStack.is(Items.BOW) || itemStack.is(Items.CROSSBOW);
+            }
+        });
+        addSlot(new Slot(this.input, 1, 76, 35) {
+            @Override
+            public boolean mayPlace(ItemStack itemStack) {
+                return itemStack.is(Items.STRING) || itemStack.is(Items.GLOWSTONE_DUST) || itemStack.is(Items.POTION);
+            }
+        });
 
         addSlot(new Slot(this.output, 0, 134, 35) {
             @Override
@@ -110,12 +126,76 @@ public class FletchingTableMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int slotIndex) {
-        return ItemStack.EMPTY;
+        ItemStack original = ItemStack.EMPTY;
+        Slot slot = this.slots.get(slotIndex);
+
+        if (!slot.hasItem()) {
+            return ItemStack.EMPTY;
+        }
+
+        ItemStack stack = slot.getItem();
+        original = stack.copy();
+
+        // Output slot
+        if (slotIndex == 2) {
+            if (!this.moveItemStackTo(stack, 3, 39, true)) {
+                return ItemStack.EMPTY;
+            }
+
+            slot.onQuickCraft(stack, original);
+            this.onTake(player, original);
+        }
+
+        // Input slots
+        else if (slotIndex == 0 || slotIndex == 1) {
+            if (!this.moveItemStackTo(stack, 3, 39, false)) {
+                return ItemStack.EMPTY;
+            }
+        }
+
+        // Player inventory / hotbar
+        else {
+            boolean moved = false;
+
+            // Try merging into the base slot
+            if (this.slots.get(0).mayPlace(stack)) {
+                moved = this.moveItemStackTo(stack, 0, 1, false);
+            }
+
+            // Then try the modifier slot
+            if (!stack.isEmpty() && this.slots.get(1).mayPlace(stack)) {
+                moved |= this.moveItemStackTo(stack, 1, 2, false);
+            }
+
+            // Otherwise move between inventory and hotbar
+            if (!moved) {
+                if (slotIndex < 30) {
+                    if (!this.moveItemStackTo(stack, 30, 39, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else {
+                    if (!this.moveItemStackTo(stack, 3, 30, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+            }
+        }
+
+        if (stack.isEmpty()) {
+            slot.set(ItemStack.EMPTY);
+        } else {
+            slot.setChanged();
+        }
+
+        slot.onTake(player, stack);
+
+        return original;
     }
 
     @Override
     public boolean stillValid(Player player) {
-        return true;
+        if(player.level().isClientSide()) return true;
+        return player.blockPosition().closerThan(this.pos, 8.0);
     }
 
     @Override

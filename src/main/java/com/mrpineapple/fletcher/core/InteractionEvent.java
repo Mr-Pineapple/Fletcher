@@ -37,8 +37,7 @@ public class InteractionEvent {
 
                     @Override
                     public FletchingTableMenu createMenu(int containerId, @NotNull Inventory inventory, @NotNull Player player) {
-                        System.out.println("Created MENU");
-                        return new FletchingTableMenu(containerId, inventory);
+                        return new FletchingTableMenu(containerId, inventory, blockPos);
                     }
                 });
                 return InteractionResult.CONSUME;
