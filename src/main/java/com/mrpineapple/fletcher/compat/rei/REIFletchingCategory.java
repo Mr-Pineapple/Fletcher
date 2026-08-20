@@ -44,6 +44,7 @@ public class REIFletchingCategory implements DisplayCategory<REIFletchingDisplay
         widgets.add(Widgets.createRecipeBase(bounds));
         widgets.add(Widgets.createSlot(new Point(x - 50, y - 9)).entries(display.getInputEntries().get(0)).markInput());
         widgets.add(Widgets.createSlot(new Point(x - 25, y - 9)).entries(display.getInputEntries().get(1)).markInput());
+        widgets.add(Widgets.createArrow(new Point(x + 2, y - 8)));
         widgets.add(Widgets.createSlot(new Point(x + 40, y - 9)).entries(display.getOutputEntries().get(0)).markOutput());
 
         return widgets;
