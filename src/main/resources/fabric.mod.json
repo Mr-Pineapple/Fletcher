@@ -21,6 +21,12 @@
 		],
 		"client": [
 			"com.mrpineapple.fletcher.FletcherClient"
+		],
+		"rei_client": [
+			"com.mrpineapple.fletcher.compat.rei.REIFletchingClientPlugin"
+		],
+		"rei_common": [
+			"com.mrpineapple.fletcher.compat.rei.REIFletchingCommonPlugin"
 		]
 	},
 	"depends": {
