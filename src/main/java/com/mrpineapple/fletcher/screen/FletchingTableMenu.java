@@ -47,11 +47,21 @@ public class FletchingTableMenu extends AbstractContainerMenu {
             public boolean mayPlace(ItemStack itemStack) {
                 return itemStack.is(Items.ARROW) || itemStack.is(Items.BOW) || itemStack.is(Items.CROSSBOW);
             }
+
+            @Override
+            public boolean allowModification(Player player) {
+                return true;
+            }
         });
         addSlot(new Slot(this.input, 1, 76, 35) {
             @Override
             public boolean mayPlace(ItemStack itemStack) {
                 return itemStack.is(Items.STRING) || itemStack.is(Items.GLOWSTONE_DUST) || itemStack.is(Items.POTION);
+            }
+
+            @Override
+            public boolean allowModification(Player player) {
+                return true;
             }
         });
 
@@ -59,6 +69,11 @@ public class FletchingTableMenu extends AbstractContainerMenu {
             @Override
             public void onTake(Player player, ItemStack carried) {
                 FletchingTableMenu.this.onTake(player, carried);
+            }
+
+            @Override
+            public boolean allowModification(Player player) {
+                return false;
             }
         });
 
