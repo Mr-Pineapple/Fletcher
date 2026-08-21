@@ -27,6 +27,9 @@
 		],
 		"rei_common": [
 			"com.mrpineapple.fletcher.compat.rei.REIFletchingCommonPlugin"
+		],
+		"jei_mod_plugin": [
+			"com.mrpineapple.fletcher.compat.jei.JEIFletchingPlugin"
 		]
 	},
 	"depends": {
