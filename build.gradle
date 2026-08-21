@@ -7,12 +7,8 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
 	maven { url "https://maven.shedaniel.me" }
+	maven {url = "https://maven.blamejared.com"}
 }
 
 fabricApi {
@@ -22,18 +18,22 @@ fabricApi {
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-	// Fabric API. This is technically optional, but you probably want it anyway.
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:26.2.820")
-	runtimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:26.2.820")
+	compileOnly("mezz.jei:jei-26.2-fabric-api:30.24.0.176")
 
 	include api("dev.architectury:architectury-fabric:21.0.4")
 	compileOnly("me.shedaniel.cloth:basic-math:0.6.1")
+
+	if(project.recipe_viewer == "rei") {
+		runtimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:26.2.820")
+	} else if(project.recipe_viewer == "jei") {
+		runtimeOnly("mezz.jei:jei-26.2-fabric:30.24.0.176")
+	}
+
 }
 
 processResources {
