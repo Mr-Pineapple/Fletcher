@@ -16,7 +16,7 @@ public class InteractionEvent {
     public static void blockInteraction() {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             BlockPos blockPos = hitResult.getBlockPos();
-            if(!world.getBlockState(blockPos).is(Blocks.FLETCHING_TABLE)) {
+            if(!world.getBlockState(blockPos).is(ModRegistry.FLETCHING_TABLE_TAG)) {
                 return InteractionResult.PASS;
             }
 
@@ -32,7 +32,7 @@ public class InteractionEvent {
                 serverPlayer.openMenu(new MenuProvider() {
                     @Override
                     public @NotNull Component getDisplayName() {
-                        return Component.translatable("block.minecraft.fletching_table");
+                        return world.getBlockState(blockPos).getBlock().getName();
                     }
 
                     @Override
