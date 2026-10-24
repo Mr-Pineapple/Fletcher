@@ -2,6 +2,7 @@
   "type": "fletcher:fletching",
   "baseItem": "minecraft:arrow",
   "modifierItem": "minecraft:potion",
+  "arrowsPerModifier": 8,
   "result": {
     "id": "minecraft:tipped_arrow"
   }

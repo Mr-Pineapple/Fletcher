@@ -1,10 +1,12 @@
 package com.mrpineapple.fletcher.recipe;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrpineapple.fletcher.core.ModRegistry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -17,11 +19,13 @@ public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
     private final ItemStackTemplate result;
     private final Ingredient baseItem;
     private final Ingredient modifierItem;
+    private final int arrowsPerModifier;
 
     public static final MapCodec<FletchingRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ItemStackTemplate.CODEC.fieldOf("result").forGetter(FletchingRecipe::getResult),
             Ingredient.CODEC.fieldOf("baseItem").forGetter(FletchingRecipe::getBaseItem),
-            Ingredient.CODEC.fieldOf("modifierItem").forGetter(FletchingRecipe::getModifierItem)
+            Ingredient.CODEC.fieldOf("modifierItem").forGetter(FletchingRecipe::getModifierItem),
+            Codec.intRange(1, 64).optionalFieldOf("arrowsPerModifier", 8).forGetter(FletchingRecipe::getArrowsPerModifier)
             ).apply(instance, FletchingRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, FletchingRecipe> STREAM_CODEC = StreamCodec.composite(
@@ -31,13 +35,16 @@ public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
             FletchingRecipe::getBaseItem,
             Ingredient.CONTENTS_STREAM_CODEC,
             FletchingRecipe::getModifierItem,
+            ByteBufCodecs.VAR_INT,
+            FletchingRecipe::getArrowsPerModifier,
             FletchingRecipe::new
     );
 
-    public FletchingRecipe(ItemStackTemplate result, Ingredient baseItem, Ingredient modifierItem) {
+    public FletchingRecipe(ItemStackTemplate result, Ingredient baseItem, Ingredient modifierItem, int arrowsPerModifier) {
         this.baseItem = baseItem;
         this.modifierItem = modifierItem;
         this.result = result;
+        this.arrowsPerModifier = arrowsPerModifier;
     }
 
     public ItemStackTemplate getResult() {
@@ -50,6 +57,10 @@ public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
 
     public Ingredient getModifierItem() {
         return this.modifierItem;
+    }
+
+    public int getArrowsPerModifier() {
+        return arrowsPerModifier;
     }
 
     @Override
@@ -71,7 +82,7 @@ public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
         }
 
         if(base.is(Items.ARROW)) {
-            result.setCount(Math.min(base.getCount(), 8));
+            result.setCount(Math.min(base.getCount(), this.arrowsPerModifier));
 
             //Potion -> Tipped Arrow
             if(modifier.is(Items.POTION)) {
@@ -81,7 +92,7 @@ public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
                 }
             }
             if(modifier.is(Items.GLOWSTONE_DUST)) {
-                result.setCount(Math.min(base.getCount(), modifier.getCount() * 8));
+                result.setCount(Math.min(base.getCount(), modifier.getCount() * this.arrowsPerModifier));
             }
         }
 

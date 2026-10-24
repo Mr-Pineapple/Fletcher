@@ -19,6 +19,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,9 @@ public class FletchingTableMenu extends AbstractContainerMenu {
             FletchingTableMenu.this.slotsChanged(this);
         }
     };
+
+    @Nullable
+    private FletchingRecipe currentRecipe;
 
     private final ResultContainer output = new ResultContainer();
     private final Level level;
@@ -93,10 +97,12 @@ public class FletchingTableMenu extends AbstractContainerMenu {
                         recipeInput,
                         serverLevel);
 
-                if(recipe.isPresent()) {
-                    this.output.setItem(0, recipe.get().value().assemble(recipeInput));
+                if (recipe.isPresent()) {
+                    this.currentRecipe = recipe.get().value();
+                    this.output.setItem(0, this.currentRecipe.assemble(recipeInput));
                     this.output.setRecipeUsed(recipe.get());
                 } else {
+                    this.currentRecipe = null;
                     this.output.clearContent();
                     this.output.setRecipeUsed(null);
                 }
@@ -105,6 +111,11 @@ public class FletchingTableMenu extends AbstractContainerMenu {
     }
 
     public void onTake(Player player, ItemStack stack) {
+        if(this.currentRecipe == null) {
+            return;
+        }
+
+        int arrowsPerModifier = this.currentRecipe.getArrowsPerModifier();
         stack.onCraftedBy(player, stack.getCount());
         this.output.awardUsedRecipes(player, List.of(
                 this.input.getItem(0),
@@ -114,7 +125,7 @@ public class FletchingTableMenu extends AbstractContainerMenu {
         ItemStack base = this.input.getItem(0).copy();
         ItemStack modifier = this.input.getItem(1).copy();
 
-        if (base.is(Items.ARROW)) {
+        if(base.is(Items.ARROW)) {
             // Tipped arrow recipes
             if (modifier.is(Items.POTION)) {
                 this.input.removeItem(0, stack.getCount());
@@ -122,7 +133,7 @@ public class FletchingTableMenu extends AbstractContainerMenu {
 
                 ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
 
-                if (this.input.getItem(1).isEmpty()) {
+                if(this.input.getItem(1).isEmpty()) {
                     this.input.setItem(1, bottle);
                 } else {
                     player.getInventory().placeItemBackInInventory(
@@ -133,20 +144,20 @@ public class FletchingTableMenu extends AbstractContainerMenu {
             }
 
             // Spectral arrow recipes
-            if (modifier.is(Items.GLOWSTONE_DUST)) {
+            else if(modifier.is(Items.GLOWSTONE_DUST)) {
                 this.input.removeItem(0, stack.getCount());
-                int glowstoneUsed = (int) Math.ceil(stack.getCount() / 8.0);
+                int glowstoneUsed = (stack.getCount() + arrowsPerModifier - 1) / arrowsPerModifier;
                 this.input.removeItem(1, glowstoneUsed);
             }
         }
 
         // Bow and crossbow repair
-        else if ((base.is(Items.BOW) || base.is(Items.CROSSBOW)) && modifier.is(Items.STRING)) {
+        else if((base.is(Items.BOW) || base.is(Items.CROSSBOW)) && modifier.is(Items.STRING)) {
             int maxDamage = base.getMaxDamage();
             int currentDamage = base.getDamageValue();
             int repairPerString = maxDamage / 8;
 
-            if (repairPerString <= 0) {
+            if(repairPerString <= 0) {
                 return;
             }
 
@@ -249,7 +260,6 @@ public class FletchingTableMenu extends AbstractContainerMenu {
         }
 
         slot.onTake(player, stack);
-
         return original;
     }
 
