@@ -22,16 +22,16 @@ dependencies {
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:26.3.824")
-	compileOnly("mezz.jei:jei-26.3-fabric-api:31.8.0.48")
+	compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:26.2.820")
+	compileOnly("mezz.jei:jei-26.2-fabric-api:30.24.0.176")
 
-	include api("dev.architectury:architectury-fabric:22.0.5")
+	include api("dev.architectury:architectury-fabric:21.0.4")
 	compileOnly("me.shedaniel.cloth:basic-math:0.6.1")
 
 	if(project.recipe_viewer == "rei") {
-		runtimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:26.3.824")
+		runtimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:26.2.820")
 	} else if(project.recipe_viewer == "jei") {
-		runtimeOnly("mezz.jei:jei-26.3-fabric:31.8.0.48")
+		runtimeOnly("mezz.jei:jei-26.2-fabric:30.24.0.176")
 	}
 
 }

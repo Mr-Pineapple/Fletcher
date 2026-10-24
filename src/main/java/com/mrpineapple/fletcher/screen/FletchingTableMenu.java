@@ -5,20 +5,17 @@ import com.mrpineapple.fletcher.recipe.FletchingRecipe;
 import com.mrpineapple.fletcher.recipe.FletchingRecipeInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Prediction;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -137,8 +134,7 @@ public class FletchingTableMenu extends AbstractContainerMenu {
                     this.input.setItem(1, bottle);
                 } else {
                     player.getInventory().placeItemBackInInventory(
-                            bottle,
-                            Prediction.SERVER_ONLY
+                            bottle
                     );
                 }
             }
