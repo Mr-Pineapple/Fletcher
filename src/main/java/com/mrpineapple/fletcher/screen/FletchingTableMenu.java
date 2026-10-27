@@ -5,7 +5,6 @@ import com.mrpineapple.fletcher.recipe.FletchingRecipe;
 import com.mrpineapple.fletcher.recipe.FletchingRecipeInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Prediction;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -136,10 +135,7 @@ public class FletchingTableMenu extends AbstractContainerMenu {
                 if(this.input.getItem(1).isEmpty()) {
                     this.input.setItem(1, bottle);
                 } else {
-                    player.getInventory().placeItemBackInInventory(
-                            bottle,
-                            Prediction.SERVER_ONLY
-                    );
+                    player.getInventory().placeItemBackInInventory(bottle);
                 }
             }
 
