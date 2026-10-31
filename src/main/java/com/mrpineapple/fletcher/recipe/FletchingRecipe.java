@@ -4,32 +4,32 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrpineapple.fletcher.core.ModRegistry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
-    private final ItemStackTemplate result;
+    private final ItemStack result;
     private final Ingredient baseItem;
     private final Ingredient modifierItem;
     private final int arrowsPerModifier;
 
     public static final MapCodec<FletchingRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ItemStackTemplate.CODEC.fieldOf("result").forGetter(FletchingRecipe::getResult),
+            ItemStack.CODEC.fieldOf("result").forGetter(FletchingRecipe::getResult),
             Ingredient.CODEC.fieldOf("baseItem").forGetter(FletchingRecipe::getBaseItem),
             Ingredient.CODEC.fieldOf("modifierItem").forGetter(FletchingRecipe::getModifierItem),
             Codec.intRange(1, 64).optionalFieldOf("arrowsPerModifier", 8).forGetter(FletchingRecipe::getArrowsPerModifier)
             ).apply(instance, FletchingRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, FletchingRecipe> STREAM_CODEC = StreamCodec.composite(
-            ItemStackTemplate.STREAM_CODEC,
+            ItemStack.STREAM_CODEC,
             FletchingRecipe::getResult,
             Ingredient.CONTENTS_STREAM_CODEC,
             FletchingRecipe::getBaseItem,
@@ -40,14 +40,14 @@ public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
             FletchingRecipe::new
     );
 
-    public FletchingRecipe(ItemStackTemplate result, Ingredient baseItem, Ingredient modifierItem, int arrowsPerModifier) {
+    public FletchingRecipe(ItemStack result, Ingredient baseItem, Ingredient modifierItem, int arrowsPerModifier) {
         this.baseItem = baseItem;
         this.modifierItem = modifierItem;
         this.result = result;
         this.arrowsPerModifier = arrowsPerModifier;
     }
 
-    public ItemStackTemplate getResult() {
+    public ItemStack getResult() {
         return this.result;
     }
 
@@ -72,8 +72,8 @@ public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(FletchingRecipeInput input) {
-        ItemStack result = this.result.create();
+    public ItemStack assemble(FletchingRecipeInput input, HolderLookup.Provider registries) {
+        ItemStack result = this.result.copy();
         ItemStack modifier = input.modifierItem();
         ItemStack base = input.baseItem();
 

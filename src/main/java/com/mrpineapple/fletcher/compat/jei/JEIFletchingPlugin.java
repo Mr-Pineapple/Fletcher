@@ -76,14 +76,14 @@ public class JEIFletchingPlugin implements IModPlugin {
             return;
         }
 
-        displays.add(JEIFletchingRecipe.normal(recipe.getBaseItem(), recipe.getModifierItem(), recipe.getResult().create()));
+        displays.add(JEIFletchingRecipe.normal(recipe.getBaseItem(), recipe.getModifierItem(), recipe.getResult().copy()));
     }
 
     private void addSpectralArrowRecipes(FletchingRecipe recipe, List<JEIFletchingRecipe> displays) {
         for(int count = 1; count <= 8; count++) {
             ItemStack arrows = new ItemStack(Items.ARROW, count);
             ItemStack glowstone = new ItemStack(Items.GLOWSTONE_DUST, 1);
-            ItemStack result = recipe.getResult().create();
+            ItemStack result = recipe.getResult().copy();
             result.setCount(count);
             displays.add(JEIFletchingRecipe.concrete(arrows, glowstone, result));
         }

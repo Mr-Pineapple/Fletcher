@@ -1,7 +1,7 @@
 package com.mrpineapple.fletcher.screen;
 
 import com.mrpineapple.fletcher.Fletcher;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -32,14 +32,19 @@ public class FletchingTableScreen extends AbstractContainerScreen<@NotNull Fletc
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-        super.extractBackground(graphics, mouseX, mouseY, delta);
+    protected void renderBg(GuiGraphics guiGraphics, float f, int i, int j) {
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        graphics.blit(RenderPipelines.GUI_TEXTURED, FLETCHING_TABLE_LOCATION, x, y, 0.0F, 0.0F, imageWidth, imageHeight, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, FLETCHING_TABLE_LOCATION, x, y, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
 
-        renderSlotHints(graphics);
+        renderSlotHints(guiGraphics);
+    }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override
@@ -55,7 +60,7 @@ public class FletchingTableScreen extends AbstractContainerScreen<@NotNull Fletc
         }
     }
 
-    private void renderSlotHints(GuiGraphicsExtractor graphics) {
+    private void renderSlotHints(GuiGraphics graphics) {
         ItemStack base = this.menu.getSlot(0).getItem();
         ItemStack modifier = this.menu.getSlot(1).getItem();
 

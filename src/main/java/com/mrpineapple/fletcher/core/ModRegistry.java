@@ -1,5 +1,6 @@
 package com.mrpineapple.fletcher.core;
 
+import com.mojang.serialization.MapCodec;
 import com.mrpineapple.fletcher.Fletcher;
 import com.mrpineapple.fletcher.recipe.FletchingRecipe;
 import com.mrpineapple.fletcher.screen.FletchingTableMenu;
@@ -7,12 +8,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -36,7 +38,17 @@ public class ModRegistry {
         FLETCHING_RECIPE_RECIPE_SERIALIZER = Registry.register(
                 BuiltInRegistries.RECIPE_SERIALIZER,
                 Identifier.fromNamespaceAndPath(Fletcher.MOD_ID, "fletching"),
-                new RecipeSerializer<>(FletchingRecipe.CODEC, FletchingRecipe.STREAM_CODEC)
+                new RecipeSerializer<FletchingRecipe>() {
+                    @Override
+                    public MapCodec<FletchingRecipe> codec() {
+                        return FletchingRecipe.CODEC;
+                    }
+
+                    @Override
+                    public StreamCodec<RegistryFriendlyByteBuf, FletchingRecipe> streamCodec() {
+                        return FletchingRecipe.STREAM_CODEC;
+                    }
+                }
         );
 
         FLETCHING_RECIPE_TYPE = Registry.register(

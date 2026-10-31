@@ -57,7 +57,7 @@ public class REIFletchingCommonPlugin implements REICommonPlugin {
                 EntryIngredients.ofIngredient(recipe.getBaseItem()),
                 EntryIngredients.ofIngredient(recipe.getModifierItem())
         ), List.of(
-                EntryIngredients.of(recipe.getResult().create())
+                EntryIngredients.of(recipe.getResult().copy())
         )));
         return displays;
     }
@@ -100,7 +100,7 @@ public class REIFletchingCommonPlugin implements REICommonPlugin {
         Registry<Potion> potionRegistry = registryAccess.lookupOrThrow(Registries.POTION);
         potionRegistry.listElements().forEach(potionHolder -> {
             ItemStack inputPotion = PotionContents.createItemStack(Items.POTION, potionHolder);
-            ItemStack output = recipe.getResult().create();
+            ItemStack output = recipe.getResult().copy();
             PotionContents contents = inputPotion.get(DataComponents.POTION_CONTENTS);
 
             if(contents != null) {

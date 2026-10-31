@@ -1,6 +1,6 @@
 package com.mrpineapple.fletcher.screen;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
@@ -27,7 +27,7 @@ public class FadingSlotIcon {
         }
     }
 
-    public void render(GuiGraphicsExtractor graphics, int x, int y) {
+    public void render(GuiGraphics graphics, int x, int y) {
         if (current == null) {
             return;
         }
